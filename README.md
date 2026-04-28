@@ -1,7 +1,7 @@
 # Ex.No:1a  			Study of Socket Programming
 
 ## Aim: 
-To perform a study on Socket Programming
+To implement the concept of Socket Programming
 ## Introduction:
 
  	Socket programming is a crucial aspect of network communication, allowing for data exchange between computers over a network. It forms the backbone of various networked applications, enabling communication between clients and servers. This study explores the fundamental concepts of socket programming, its use cases, and provides a practical example to demonstrate its implementation.
@@ -52,6 +52,70 @@ Socket programming finds applications in various domains, including web developm
 3.	File Transfer Protocol: Protocols like FTP (File Transfer Protocol) utilize socket programming for transferring files between a client and a server.
 4.	Networked Games: Online multiplayer games rely on socket programming to facilitate communication between game clients and servers.
 5.	RPC mechanisms: which allow processes to execute code on a remote server, often use socket programming for communication.
+## Program
+```
+import socket
+import threading
+
+# Host and port
+HOST = '127.0.0.1'
+PORT = 12345
+
+# Function for the server (Friend A)
+def server_task():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen(1)
+    print("Friend A (Server) waiting for connection...")
+
+    conn, addr = server_socket.accept()
+    print(f"Friend B connected from {addr}")
+
+    while True:
+        data = conn.recv(1024).decode()
+        if not data or data.lower() == "bye":
+            print("Friend B left the chat.")
+            break
+        print(f"Friend B: {data}")
+        reply = input("Friend A: ")
+        conn.sendall(reply.encode())
+        if reply.lower() == "bye":
+            break
+
+    conn.close()
+    server_socket.close()
+
+# Function for the client (Friend B)
+def client_task():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((HOST, PORT))
+    print("Connected to Friend A (Server). Start chatting!")
+
+    while True:
+        msg = input("Friend B: ")
+        client_socket.sendall(msg.encode())
+        if msg.lower() == "bye":
+            break
+        data = client_socket.recv(1024).decode()
+        if not data or data.lower() == "bye":
+            print("Friend A left the chat.")
+            break
+        print(f"Friend A: {data}")
+
+    client_socket.close()
+
+# Run both server and client in threads
+server_thread = threading.Thread(target=server_task)
+client_thread = threading.Thread(target=client_task)
+
+server_thread.start()
+client_thread.start()
+
+server_thread.join()
+client_thread.join()
+````
+## Output:
+<img width="879" height="327" alt="Screenshot 2026-04-28 160826" src="https://github.com/user-attachments/assets/7a783cf4-a5d2-4334-89b8-c69d3880622b" />
 
 
 ## Result:
