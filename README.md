@@ -114,6 +114,7 @@ client_thread.start()
 server_thread.join()
 client_thread.join()
 ```
+
 ## Output:
 <img width="879" height="327" alt="Screenshot 2026-04-28 160826" src="https://github.com/user-attachments/assets/7a783cf4-a5d2-4334-89b8-c69d3880622b" />
 
